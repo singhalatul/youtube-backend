@@ -1,6 +1,6 @@
 /* promise async handler*/
 const asyncHandler = (func)=>{
-   (req,res,next)=>{
+    return (req,res,next)=>{
         Promise.resolve(func(req,res,next))
         .catch((err)=>{
             next(err)
@@ -22,6 +22,5 @@ const asyncHandler = (func)=>{
     }
   }
 }
-
-export  {asyncHandler}
 */
+export  {asyncHandler}

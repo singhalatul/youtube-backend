@@ -21,6 +21,20 @@ app.use(express.static("public"))
 //only server can access it 
 app.use(cookieParser());
 
+
+
+//routes
+import userRouter from './routes/user.routes.js';
+
+//routes declaration
+app.use('/api/v1/users',userRouter);
+
+
+
+// app.listen(process.env.PORT,()=>{
+//     console.log(`server is listening at ${process.env.PORT}`);
+// })
+
 export default app;
 
 //v8
