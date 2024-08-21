@@ -3,6 +3,7 @@ import {ApiError} from '../utils/ApiError.js';
 import {User} from '../models/user.model.js';
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
+import jwt from 'jsonwebtoken';
 
 const generateAccessAndRefreshToken = async (userId)=>{
     try{
@@ -194,7 +195,7 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
     }
 
     try {
-        const verifiedToken = Jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET);
+        const verifiedToken = jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET);
     
         const user = await User.findById(verifiedToken?._id).select(
             "-password"
@@ -217,7 +218,7 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
         const {accessToken,newRefreshToken} = await generateAccessAndRefreshToken(user._id)
     
         return res.status(200)
-        .cokkie("accessToken",accessToken,options)
+        .cookie("accessToken",accessToken,options)
         .cookie("refreshToken",newRefreshToken,options)
         .json(
             new ApiResponse(200,
