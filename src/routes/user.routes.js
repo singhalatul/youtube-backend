@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {registerUser,loginUser,logoutUser,refreshAccessToken} from '../controllers/user.controller.js';
+import {registerUser,loginUser,logoutUser,refreshAccessToken, updateUserAvatar} from '../controllers/user.controller.js';
 import {upload} from '../middlewares/multer.middleware.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
 
@@ -22,5 +22,14 @@ router.route('/login').post(
 )
 router.route('/logout').post(verifyJWT,logoutUser)
 router.route('/refreshToken').post(refreshAccessToken)
+router.route('/update/avatar').put(
+    upload.single(
+        {
+            name:"avatar",
+            maxCount:1
+        }
+    ),
+        updateUserAvatar
+)
 
 export default router;
