@@ -4,6 +4,7 @@ import {User} from '../models/user.model.js';
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 const generateAccessAndRefreshToken = async (userId)=>{
     try{
@@ -255,7 +256,7 @@ const getCurrentUser = asyncHandler(async (req,res)=>{
     return res.status(200).json(
         new ApiResponse(200,
         {
-            userinfo
+            userInfo
         },
         "getting user successfully"
     ))
@@ -264,11 +265,11 @@ const getCurrentUser = asyncHandler(async (req,res)=>{
 const updateAccountDetails = asyncHandler(async(req,res)=>{
     const {fullName,email} = req.body;
 
-    if(!fullName || !email){
+    if(!fullName && !email){
         throw new ApiError(400,"All fields are required")
     }
 
-    const user = await findByIdAndUpdate(req.user?._id,
+    const user = await User.findByIdAndUpdate(req.user?._id,
         {
             $set :{fullName,
                 email
@@ -391,7 +392,7 @@ const getUserChannelProfile = asyncHandler(async (req,res)=>{
         {
             $lookup:{
                 from:"subscriptions",
-                localfield:"_id",
+                localField:"_id",
                 foreignField:"subscriber",
                 as:"subscribedTo"
             }
@@ -439,33 +440,32 @@ const getUserChannelProfile = asyncHandler(async (req,res)=>{
     )
 })
 
-const getUserWatchHistory = asyncHandler(async(req,res)=>{
-
-    const channel = User.aggregate([
+const getWatchHistory = asyncHandler(async(req, res) => {
+    const user = await User.aggregate([
         {
-            $match:{
-                _id:new mongoose.Types.ObjectId(req.user._id)
+            $match: {
+                _id: new mongoose.Types.ObjectId(req.user._id)
             }
         },
         {
-            $lookup:{
-                from:"videos",
-                localField:"watchHistory",
-                foreignField:"_id",
-                as:"watchHistory",
-                pipeline:[
+            $lookup: {
+                from: "videos",
+                localField: "watchHistory",
+                foreignField: "_id",
+                as: "watchHistory",
+                pipeline: [
                     {
-                        $lookup:{
-                            from:"users",
-                            localField:"owner",
-                            foreignFeild:"_id",
-                            as:"owner",
-                            pipeline:[
+                        $lookup: {
+                            from: "users",
+                            localField: "owner",
+                            foreignField: "_id",
+                            as: "owner",
+                            pipeline: [
                                 {
-                                    $project:{
-                                        fullName:1,
-                                        username:1,
-                                        avatar:1,
+                                    $project: {
+                                        fullName: 1,
+                                        username: 1,
+                                        avatar: 1
                                     }
                                 }
                             ]
@@ -474,24 +474,25 @@ const getUserWatchHistory = asyncHandler(async(req,res)=>{
                     {
                         $addFields:{
                             owner:{
-                                // $ArrayElemAt:"$owner"
-                                $first:"$owner"
+                                $first: "$owner"
                             }
                         }
                     }
                 ]
-                
             }
-        },
+        }
     ])
-    return res.status(200).json(
-        new ApiResponse(200,
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
             user[0].watchHistory,
-            "watch history fetched successfully"
+            "Watch history fetched successfully"
         )
     )
 })
-
 
 export  {registerUser,
     loginUser,
@@ -503,5 +504,5 @@ export  {registerUser,
     updateUserAvatar,
     updateUserCoverImage,
     getUserChannelProfile,
-    getUserWatchHistory
+    getWatchHistory
 }
