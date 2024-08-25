@@ -12,4 +12,5 @@ router.route('/comment/:commentId').post(verifyJWT,toggleCommentLike)
 router.route('/tweet/:tweetId').post(verifyJWT,toggleTweetLike)
 router.route('/allvideos').get(verifyJWT,getAllLikedVideos)
 
+
 export default router;
