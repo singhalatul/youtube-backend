@@ -8,4 +8,5 @@ router.route('/add/:videoId').post(verifyJWT,addComment)
 router.route('/update/:commentId').patch(updateComment)
 router.route('/delete/:commentId/:videoId').delete(verifyJWT,deleteComment)
 
+
 export default router;
