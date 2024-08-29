@@ -119,4 +119,5 @@ dist
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
 
-src/routes/playlist.routes.js
+
+src/routes/subscription.routes.js
