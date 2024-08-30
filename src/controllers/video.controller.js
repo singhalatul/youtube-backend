@@ -9,6 +9,10 @@ import {uploadOnCloudinary,deleteFromCloudinary} from "../utils/cloudinary.js";
 const publishVideo = asyncHandler(async(req,res)=>{
     const {title,description,thumbnail} = req.body;
 
+    if (!title || !description || !duration) {
+        throw new ApiError(400, 'Title, description, and duration are required.');
+    }
+
     const videoFilePath = req.file?.path;
 
     if(!videoFilePath){
@@ -30,12 +34,14 @@ const publishVideo = asyncHandler(async(req,res)=>{
             description,
             thumbnail,
             videoFile:video.url,
+            views:0,
             duration:video.duration,
             owner:owner,
             publicId:video.public_id
         })
     
-    
+        await newVideo.save();
+
         return res.status(200).json(
             new ApiResponse(200,
                { data:newVideo},
@@ -111,6 +117,10 @@ const getVideoById = asyncHandler(async(req,res)=>{
 const updateVideo = asyncHandler(async(req,res)=>{
     const {videoId} = req.params;
     const videofile = await Video.findById(videoId)
+
+    if (!videoId) {
+        throw new ApiError(400, 'Invalid video ID.');
+    }
     const videoPath = req.file?.path
     if(!videoPath){
         throw new ApiError(400,"video not available")
@@ -148,7 +158,13 @@ const updateVideo = asyncHandler(async(req,res)=>{
 const deleteVideo = asyncHandler(async(req,res)=>{
     const {videoId} = req.params
 
+    if (!videoId) {
+        throw new ApiError(400, 'Invalid video ID.');
+    }
     const videoFile = await Video.findByIdAndDelete(videoId);
+    if (!videoFile) {
+        throw new ApiError(404, 'Video not found.');
+    }
     await deleteFromCloudinary(videoFile.publicId)
 
     return res.status(200).json(
