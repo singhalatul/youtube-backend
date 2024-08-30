@@ -122,4 +122,6 @@ dist
 
 
 
-src/controllers/dashboard.controller.js
+
+src/routes/dashboard.routes.js
+src/controllers/video.controller.js

@@ -9,7 +9,7 @@ import {uploadOnCloudinary,deleteFromCloudinary} from "../utils/cloudinary.js";
 const publishVideo = asyncHandler(async(req,res)=>{
     const {title,description,thumbnail} = req.body;
 
-    if (!title || !description || !duration) {
+    if (!title || !description || !thumbnail) {
         throw new ApiError(400, 'Title, description, and duration are required.');
     }
 
