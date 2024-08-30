@@ -5,7 +5,6 @@ import {Video} from '../models/video.model.js';
 // import {User} from '../models/user.model.js';
 import {uploadOnCloudinary,deleteFromCloudinary} from "../utils/cloudinary.js";
 
-
 const publishVideo = asyncHandler(async(req,res)=>{
     const {title,description,thumbnail} = req.body;
 
