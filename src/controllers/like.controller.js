@@ -4,6 +4,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import {Like} from '../models/like.model.js';
 import {Video} from '../models/video.model.js';
 import {User} from '../models/user.model.js';
+import {Comment} from '../models/comment.model.js'
+import {Tweet} from '../models/tweets.model.js'
 import mongoose from 'mongoose';
 
 const toggleVideoLike = asyncHandler(async(req,res)=>{
@@ -50,10 +52,10 @@ const toggleCommentLike = asyncHandler(async(req,res)=>{
     const user = req.user; // Assuming req.user is set by authentication middleware
 
     // Find the tweet by ID
-    const comment = await Video.findById(commentId);
+    const comment = await Comment.findById(commentId);
 
     if (!comment) {
-        throw new ApiError(400, 'Video not found');
+        throw new ApiError(400, 'comment not found');
     }
 
     try {
@@ -89,10 +91,10 @@ const toggleTweetLike = asyncHandler(async(req,res)=>{
     const user = req.user; // Assuming req.user is set by authentication middleware
 
     // Find the tweet by ID
-    const tweet = await Video.findById(videoId);
+    const tweet = await Tweet.findById(tweetId);
 
     if (!tweet) {
-        throw new ApiError(400, 'Video not found');
+        throw new ApiError(400, 'tweet not found');
     }
 
     try {
