@@ -8,4 +8,5 @@ router.route('/getTweet/:userId').get(getUserTweets)
 router.route('/update/:tweetId').patch(updateTweet)
 router.route('/delete/:tweetId').delete(deleteTweet)
 
+
 export default router;
