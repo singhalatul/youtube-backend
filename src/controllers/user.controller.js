@@ -76,7 +76,7 @@ const registerUser = asyncHandler( async (req,res)=>{
 
     console.log(avatar);
 
-    if(!avatar){
+    if(!avatar.url){
         throw new ApiError(400,"avatar not found")
     }
 
